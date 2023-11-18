@@ -36,6 +36,9 @@ class OverworldMap {
             
         }
         this.isCutscenePlaying = false;
+
+        // Reset the NPC's behavior
+        Object.values(this.gameObjects).forEach(object => object.doBehaviorEvent(this));
     }
 
     addWall(x,y) {

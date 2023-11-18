@@ -29,7 +29,7 @@ class GameObject {
 
     async doBehaviorEvent(map) {
         // Check if there is a cutscene playing or if there is no event to be fired
-        if (map.isCutscenePlaying || this.behaviorLoop.length === 0) {
+        if (map.isCutscenePlaying || this.behaviorLoop.length === 0 || this.isStanding) {
             return;
         }
         let eventConfig = this.behaviorLoop[this.behaviorLoopIndex];

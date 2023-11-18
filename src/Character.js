@@ -3,6 +3,7 @@ class Character extends GameObject {
         super(config);
         this.IsPlayerControlled = config.IsPlayerControlled || false;
         this.movingProgressRemaining = 0;
+        this.isStanding = false;
 
         this.directionUpdate = {
             "up" : ["y", -1],
@@ -46,10 +47,12 @@ class Character extends GameObject {
         }
 
         if (behavior.type === "stand") {
+            this.isStanding = true;
             setTimeout(() => {
                 utils.emitEvent("CharacterStandingComplete", {
                     whoId: this.id
                 })
+                this.isStanding = false;
             }, behavior.time)
         }
     }
