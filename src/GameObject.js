@@ -29,7 +29,7 @@ class GameObject {
 
     async doBehaviorEvent(map) {
         // Check if there is a cutscene playing or if there is no event to be fired
-        if (map.isCutscenePlaying || this.behaviorLoop.lenght === 0) {
+        if (map.isCutscenePlaying || this.behaviorLoop.length === 0) {
             return;
         }
         let eventConfig = this.behaviorLoop[this.behaviorLoopIndex];
@@ -40,7 +40,7 @@ class GameObject {
         await eventHandler.init(); // We wait for the event to finish
 
         this.behaviorLoopIndex += 1;
-        if (this.behaviorLoopIndex === this.behaviorLoop.lenght) {
+        if (this.behaviorLoopIndex === this.behaviorLoop.length) {
             this.behaviorLoopIndex = 0;
         }
 

@@ -17,14 +17,14 @@ class Character extends GameObject {
             this.updatePosition();
         } else {
             // Case 1: Player *can* provide input and is currently pressing a key
-            if (this.IsPlayerControlled && state.arrow) {
+            if (!state.map.isCutscenePlaying && this.IsPlayerControlled && state.arrow) {
                 this.startBehavior(state, {
                     type: "walk",
                     direction: state.arrow
                 })
             }
             // Other cases of movement will be considered here
-            this.updateSprite(state);
+            this.updateSprite();
         }  
     }
 
@@ -34,11 +34,23 @@ class Character extends GameObject {
         if (behavior.type === "walk") {
             // Stop the character from moving if the space is not free
             if (state.map.isSpaceTaken(this.x, this.y, this.direction)) {
+                behavior.retry && setTimeout(() => {
+                    this.startBehavior(state, behavior)
+                }, 10)
                 return;
             };
             // If the space is not taken then move the character
             state.map.moveWall(this.x,this.y,this.direction);
             this.movingProgressRemaining = 16;
+            this.updateSprite();
+        }
+
+        if (behavior.type === "stand") {
+            setTimeout(() => {
+                utils.emitEvent("CharacterStandingComplete", {
+                    whoId: this.id
+                })
+            }, behavior.time)
         }
     }
 

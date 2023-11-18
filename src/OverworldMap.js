@@ -24,6 +24,20 @@ class OverworldMap {
         })
     }
 
+    async startCutscene(events) {
+        this.isCutscenePlaying = true;
+        // Start the loop of events from the cutscene and wait for each one to complete
+        for (let i = 0; i < events.length; i++) {
+            const eventHandler = new OverworldEvent({
+                event: events[i],
+                map: this
+            });
+            await eventHandler.init();
+            
+        }
+        this.isCutscenePlaying = false;
+    }
+
     addWall(x,y) {
         this.walls[`${x},${y}`] = true;
     }
@@ -54,7 +68,7 @@ window.OverworldMaps = {
                 src: "assets/sprites/WizardPlayer.png",
                 behaviorLoop: [
                     { type: "walk", direction: "right" },
-                   // { type: "stand", direction: "up", time: 800 },
+                    { type: "stand", direction: "up", time: 800 },
                     { type: "walk", direction: "up" },
                     { type: "walk", direction: "left" },
                     { type: "walk", direction: "down" }

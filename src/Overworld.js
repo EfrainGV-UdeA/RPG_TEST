@@ -22,7 +22,9 @@ class Overworld {
             // Draw the map
             this.map.drawMap(this.ctx, cameraPerson);
             // Draw the objects contained in the map
-            Object.values(this.map.gameObjects).forEach(object => {
+            Object.values(this.map.gameObjects).sort((a,b) => {
+                return a.y - b.y;
+            }).forEach(object => {
                 object.sprite.draw(this.ctx, cameraPerson);
             })
             requestAnimationFrame(() => {
@@ -40,6 +42,14 @@ class Overworld {
         this.directionInput = new DirectionInput();
         this.directionInput.init();
 
-        this.startGameLoop();        
+        this.startGameLoop();
+        
+        this.map.startCutscene([
+            { who:"player_character", type: "walk", direction: "down" },
+            { who:"player_character", type: "walk", direction: "down" },
+            { who:"player_character", type: "walk", direction: "right" },
+            { who:"player_character", type: "stand", direction: "up", time: 1200 },
+            { who:"npcA", type: "walk", direction: "down" }
+        ])
     }
 }
