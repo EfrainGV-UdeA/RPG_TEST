@@ -30,7 +30,7 @@ class Character extends GameObject {
     }
 
     startBehavior(state, behavior) {
-        // The character will move in wichever direction the behavior tells him to
+        // The character will move in whichever direction the behavior tells him to
         this.direction = behavior.direction;
         if (behavior.type === "walk") {
             // Stop the character from moving if the space is not free

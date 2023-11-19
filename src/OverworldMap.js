@@ -1,6 +1,8 @@
 class OverworldMap {
     constructor(config) {
+        this.overworld = null;
         this.gameObjects = config.gameObjects;
+        this.cutSceneSpaces = config.cutSceneSpaces || {};
         this.walls = config.walls || {};
         this.tiledMap = new Image();
         this.tiledMap.src = config.tiledMapSrc;
@@ -41,6 +43,25 @@ class OverworldMap {
         Object.values(this.gameObjects).forEach(object => object.doBehaviorEvent(this));
     }
 
+    checkForFootstepCutscene() {
+        const character = this.gameObjects["player_character"];
+        const match = this.cutSceneSpaces[`${character.x},${character.y}`];
+        if (!this.isCutscenePlaying && match) {
+            this.startCutscene(match[0].events)
+        }
+    }
+
+    checkForActionCutscene() {
+        const character = this.gameObjects["player_character"];
+        const nextCoords = utils.nextPosition(character.x, character.y, character.direction);
+        const match = Object.values(this.gameObjects).find(object => {
+            return `${object.x},${object.y}` === `${nextCoords.x},${nextCoords.y}`
+        });
+        if (!this.isCutscenePlaying && match && match.talking.length) {
+            this.startCutscene(match.talking[0].events)
+        }
+    }
+
     addWall(x,y) {
         this.walls[`${x},${y}`] = true;
     }
@@ -62,19 +83,28 @@ window.OverworldMaps = {
         gameObjects: {
             player_character: new Character({
                 IsPlayerControlled: true,
-                x: utils.widthGrid(7),
-                y: utils.widthGrid(7),
+                x: utils.widthGrid(6),
+                y: utils.widthGrid(6),
             }),
             npcA: new Character({
                 x: utils.widthGrid(8),
-                y: utils.widthGrid(7),
-                src: "assets/sprites/WizardPlayer.png",
+                y: utils.widthGrid(8),
+                src: "assets/sprites/PriestPlayer.png",
                 behaviorLoop: [
                     { type: "walk", direction: "right" },
                     { type: "stand", direction: "up", time: 800 },
                     { type: "walk", direction: "up" },
                     { type: "walk", direction: "left" },
                     { type: "walk", direction: "down" }
+                ],
+                talking: [
+                    {
+                        events: [
+                            { type: "textMessage", text: "Hi!", facePlayer: "npcA" },
+                            { type: "textMessage", text: "GTFO!" },
+                            { who: "player_character", type: "walk", direction: "left" },
+                        ]
+                    }
                 ]
             })
         },
@@ -83,6 +113,26 @@ window.OverworldMaps = {
             [utils.asGridCoord(5,7)] : true,
             [utils.asGridCoord(5,8)] : true,
             [utils.asGridCoord(5,9)] : true,
+        },
+        cutSceneSpaces: {
+            [utils.asGridCoord(7,12)] : [
+                {
+                    events: [
+                        { type: "textMessage", text: "I can't go yet!" },
+                        { who: "player_character", type: "walk", direction: "up" },
+                        { who: "player_character", type: "walk", direction: "up" },
+                    ]
+                }
+            ],
+            [utils.asGridCoord(8,14)] : [
+                {
+                    events: [
+                        { type: "changeMap", map: "DirtRoadToCity" },
+                        /* { who: "player_character", type: "walk", direction: "up" },
+                        { who: "player_character", type: "walk", direction: "up" }, */
+                    ]
+                }
+            ],
         }
     },
     DirtRoadToCity: {
@@ -92,7 +142,19 @@ window.OverworldMaps = {
                 IsPlayerControlled: true,
                 x: utils.widthGrid(7),
                 y: utils.widthGrid(7),
-            })            
+            }),
+            npcB: new Character({
+                x: utils.widthGrid(10),
+                y: utils.widthGrid(12),
+                src: "assets/sprites/WizardPlayer.png",
+                talking: [
+                    {
+                        events: [
+                            {type: "textMessage", text: "Hello $player$!", facePlayer:["npcB"]},
+                        ]
+                    }
+                ]
+            })         
         }
     },
 }

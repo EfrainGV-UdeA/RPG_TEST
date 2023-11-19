@@ -34,10 +34,32 @@ class Overworld {
         step();
     }
 
+    bindActionInput() {
+        new KeyPressListener("Enter", () => {
+            this.map.checkForActionCutscene()
+        })
+    }
+
+    bindPlayerPositionCheck() {
+        document.addEventListener("CharacterWalkingComplete", e => {
+            if (e.detail.whoId === "player_character") {
+                this.map.checkForFootstepCutscene()
+            }
+        })
+    }
+
+    startMap(mapConfig) {
+        this.map = new OverworldMap(mapConfig);
+        this.map.overworld = this;
+        this.map.mountObjects();
+    }
+
     init() {
 
-        this.map = new OverworldMap(window.OverworldMaps.GameStart);
-        this.map.mountObjects();
+        this.startMap(window.OverworldMaps.GameStart);
+
+        this.bindActionInput();
+        this.bindPlayerPositionCheck();
 
         this.directionInput = new DirectionInput();
         this.directionInput.init();
@@ -48,8 +70,9 @@ class Overworld {
             { who:"player_character", type: "walk", direction: "down" },
             { who:"player_character", type: "walk", direction: "down" },
             { who:"player_character", type: "walk", direction: "right" },
-            { who:"player_character", type: "stand", direction: "up", time: 1200 },
-            { who:"npcA", type: "walk", direction: "down" }
+            { who:"player_character", type: "stand", direction: "right", time: 1200 },
+            { who:"npcA", type: "stand", direction: "left", time: 800 },
+            { type: "textMessage", text: "Is dangerous to go alone, take this!" }
         ])
     }
 }

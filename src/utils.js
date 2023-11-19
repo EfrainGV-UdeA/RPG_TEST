@@ -25,6 +25,18 @@ const utils = {
         }
         return {x,y};
     },
+
+    oppositeDirection(direction) {
+        const directionMap = {
+            "left": "right",
+            "right": "left",
+            "up": "down",
+            "down": "up"
+        };
+    
+        return directionMap[direction] || "up";
+    },    
+
     emitEvent(name, detail) {
         const event = new CustomEvent(name, {
             detail

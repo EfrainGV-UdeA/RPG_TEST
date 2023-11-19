@@ -14,7 +14,7 @@ class OverworldEvent {
             time: this.event.time
         })
 
-        // resolve the event when the correct character is done walking
+        // resolve the event when the correct character is done standing
         const completeHandler = e => {
             if (e.detail.whoId === this.event.who) {
                 document.removeEventListener("CharacterStandingComplete", completeHandler);
@@ -42,6 +42,23 @@ class OverworldEvent {
             }
         }
         document.addEventListener("CharacterWalkingComplete", completeHandler)
+    }
+
+    textMessage(resolve) {
+        if (this.event.facePlayer) {
+            const obj = this.map.gameObjects[this.event.facePlayer];
+            obj.direction = utils.oppositeDirection(this.map.gameObjects["player_character"].direction);
+        }
+        const message = new TextMessage({
+            text: this.event.text,
+            onComplete: () => resolve()
+        })
+        message.init( document.querySelector(".game-container") )
+    }
+
+    changeMap(resolve) {
+        this.map.overworld.startMap( window.OverworldMaps[this.event.map] );
+        resolve();
     }
 
     init() {
