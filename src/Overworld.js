@@ -67,8 +67,9 @@ class Overworld {
         this.startGameLoop();
         
         this.map.startCutscene([
-            { type: "changeMap", map: "DirtRoadToCity" }
-            /* { who:"player_character", type: "walk", direction: "down" },
+            { type: "battle" }
+            /* { type: "changeMap", map: "DirtRoadToCity" },
+            { who:"player_character", type: "walk", direction: "down" },
             { who:"player_character", type: "walk", direction: "down" },
             { who:"player_character", type: "walk", direction: "right" },
             { who:"player_character", type: "stand", direction: "right", time: 1200 },

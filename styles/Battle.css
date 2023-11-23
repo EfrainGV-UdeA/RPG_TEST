@@ -1,0 +1,36 @@
+.Battle {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-image: url(../assets/sprites/BattleSceneGrass.png);
+    background-size: cover;
+    image-rendering: pixelated;
+}
+
+.Battle_player, .Battle_enemy {
+    position: absolute;
+    transform: scale(2.5);
+    width: 16px;
+    height: 32px;
+    overflow: hidden;
+}
+
+.Battle_player img, .Battle_enemy img {
+    pointer-events: none;
+}
+
+.Battle_player {
+    bottom: 35px;
+    left: 30px;
+}
+
+.Battle_player img {
+    transform: translateY(-64px);
+}
+
+.Battle_enemy {
+    top: 35px;
+    right: 30px;
+}
