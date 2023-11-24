@@ -70,6 +70,50 @@ class Combatant {
 
 
         this.hudElement.querySelector(".Combatant_level").innerText = this.level;
+
+        const statusElement = this.hudElement.querySelector(".Combatant_status");
+        if (this.status) {
+            statusElement.innerText = this.status.type;
+            statusElement.style.display = "block";
+        } else {
+            statusElement.innerText = "";
+            statusElement.style.display = "none";
+        }
+    }
+
+    getReplacedEvents(originalEvents) {
+        if (this.status?.type === "entangled" && utils.randomFromArray([true,false,false])) {
+            return [
+                { type: "textMessage", text: `${this.name} is trapped by the vines!` },
+            ]
+        }
+        return originalEvents;
+    }
+
+    getPostEvents() {
+        if (this.status?.type === "blessed") {
+            return [
+                { type: "textMessage", text: "You feel restored!" },
+                { type: "stateChange", recover: 10, onCaster: true },
+            ]
+        }
+        return [];
+    }
+
+    decrementStatus() {
+        if (this.status?.expiresIn > 0) {
+            this.status.expiresIn -= 1;
+            if (this.status.expiresIn === 0) {
+                this.update({
+                    status: null
+                })
+                return {
+                    type: "textMessage", 
+                    text: "Status expired"
+                }
+            }
+        }
+        return null;
     }
 
     init(container) {
