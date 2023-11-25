@@ -67,14 +67,14 @@ class Overworld {
         this.startGameLoop();
         
         this.map.startCutscene([
-            { type: "battle" }
-            /* { type: "changeMap", map: "DirtRoadToCity" },
+            //{ type: "battle" }
             { who:"player_character", type: "walk", direction: "down" },
             { who:"player_character", type: "walk", direction: "down" },
             { who:"player_character", type: "walk", direction: "right" },
             { who:"player_character", type: "stand", direction: "right", time: 1200 },
             { who:"npcA", type: "stand", direction: "left", time: 800 },
-            { type: "textMessage", text: "Is dangerous to go alone, take this!" } */
+            { type: "textMessage", text: "The forces of evil have taken this land" },
+            { type: "textMessage", text: "Be careful!" }
         ])
     }
 }

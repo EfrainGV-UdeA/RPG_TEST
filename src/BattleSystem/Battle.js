@@ -1,5 +1,6 @@
 class Battle {
-    constructor() {
+    constructor({onComplete}) {
+        this.onComplete = onComplete
         this.combatants = {
             "player1": new Combatant({
                 ...Entities.npcHumanRed,
@@ -15,8 +16,8 @@ class Battle {
             "enemy1": new Combatant({
                 ...Entities.npcShadowBandit,
                 team: "enemy",
-                hp: 100,
-                maxHp: 100,
+                hp: 15,
+                maxHp: 15,
                 xp: 0,
                 maxXp: 100,
                 level: 2,
@@ -35,8 +36,15 @@ class Battle {
         }
         this.activeCombatants = {
             player: "player1",
-            enemy: "enemy2"
+            enemy: "enemy1"
         }
+        this.items = [
+            { actionId: "item_cleansingPotion", instanceId: "p1", team: "player" },
+            { actionId: "item_cleansingPotion", instanceId: "p2", team: "player" },
+            { actionId: "item_cleansingPotion", instanceId: "p3", team: "enemy" },
+            { actionId: "item_healingPotion", instanceId: "p4", team: "player" },
+
+        ]
     }
 
     createElement() {
@@ -69,6 +77,12 @@ class Battle {
                     const battleEvent = new BattleEvent(event, this)
                     battleEvent.init(resolve);
                 })
+            },
+            onWinner: winner => {
+                if (winner === "player") {
+                    this.element.remove();
+                    this.onComplete();
+                }
             }
         })
         this.turnCycle.init();

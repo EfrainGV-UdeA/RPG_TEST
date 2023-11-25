@@ -1,7 +1,8 @@
 class TurnCycle {
-    constructor({battle, onNewEvent}) {
+    constructor({battle, onNewEvent, onWinner}) {
         this.battle = battle;
         this.onNewEvent = onNewEvent;
+        this.onWinner = onWinner;
         this.currentTeam = "player"
     }
 
@@ -16,6 +17,11 @@ class TurnCycle {
             caster,
             enemy
         })
+
+        if (submission.instanceId) {
+            this.battle.items = this.battle.items.filter(i => i.instanceId !== submission.instanceId)
+        }
+
         const resultingEvents = caster.getReplacedEvents(submission.action.success);
         for (let i = 0; i < resultingEvents.length; i++) {
             const event = {
@@ -26,6 +32,16 @@ class TurnCycle {
                 target: submission.target,
             } 
             await this.onNewEvent(event);           
+        }
+
+        //Did the target die?
+        const targetDead = submission.target.hp <= 0;
+        if (targetDead) {
+            await this.onNewEvent({
+                type: "textMessage", text: `${submission.target.name} lost the battle!`
+            })
+            this.onWinner("player");
+            return;
         }
 
         const postEvents = caster.getPostEvents();

@@ -56,4 +56,20 @@ const utils = {
         document.dispatchEvent(event);
     },
 
+    findElementPositions(width, height, flatArray) {
+        const result = {};
+      
+        for (let i = 0; i < flatArray.length; i++) {
+          const col = i % width;
+          const row = Math.floor(i / width);
+      
+          if (flatArray[i] === 1908) {
+            const position = utils.asGridCoord(col + 1, row);
+            result[[position]] = true;
+          }
+        }
+      
+        return result;
+    }
+
 }
